@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/settings_db_category_title" >
+        <EditTextPreference
+            android:defaultValue="@string/db_file_default"
+            android:key="db_file"
+            android:summary="@string/settings_db_chose_summary"
+            android:title="@string/settings_db_file_title" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

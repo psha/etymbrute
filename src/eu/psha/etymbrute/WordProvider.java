@@ -2,12 +2,17 @@ package eu.psha.etymbrute;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 
 public class WordProvider extends ContentProvider {
-
+	//private MySqliteOpenHelper msoh;
+	
 	@Override
 	public int delete(Uri arg0, String arg1, String[] arg2) {
 		// TODO Auto-generated method stub
@@ -28,7 +33,7 @@ public class WordProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
-		// TODO Auto-generated method stub
+		//msoh = new MySqliteOpenHelper(context, name, factory, version)
 		return true;
 	}
 
@@ -44,5 +49,9 @@ public class WordProvider extends ContentProvider {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	
 
+	
+	
 }

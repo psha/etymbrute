@@ -7,9 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SearchView;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity{
 
 
 	String tag = "EtymBrute";
@@ -35,6 +36,9 @@ public class HomeActivity extends Activity {
 		getMenuInflater().inflate(R.menu.options_menu, menu);
 		getActionBar().setDisplayShowTitleEnabled(false);
 
+		
+		
+		///SEARCH BAR
 		// Keep the search bar open (not minimised to a magnifying glass icon)
 		SearchView sw = (SearchView) menu.findItem(R.id.menu_search)
 				.getActionView();
@@ -53,7 +57,19 @@ public class HomeActivity extends Activity {
 		return true;
 	}
 	
-    @Override
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			openSettings();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
     protected void onNewIntent(Intent intent) {
         // Because this activity has set launchMode="singleTop", the system calls this method
         // to deliver the intent if this activity is currently the foreground activity when
@@ -70,5 +86,15 @@ public class HomeActivity extends Activity {
     
     public void doSearch(String query){
 	      Log.d(tag, "Handle query: " + query);
+    }
+    
+    // Open the settings dialog
+    private void openSettings(){
+    	Log.d(tag, "Opening Settings dialog.");
+        //settings menu
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new EtymbruteSettingsFragment())
+                .addToBackStack(getResources().getString(R.string.action_settings) )
+                .commit();
     }
 }
