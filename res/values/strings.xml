@@ -8,10 +8,11 @@
     <string name="app_label">EtymBrute</string>
     <string name="search_hint">Search word</string>
     <string name="search_instructions">Use search to find word</string>
-    <string name="db_file_default">/sdcard/</string>
+    <string name="db_file_default">/storage/sdcard/testingThis.db</string>
     <string name="settings_db_file_title">Database file</string>
     <string name="settings_db_category_title">Database</string>
     <string name="settings_db_chose_summary">Specify which database file to use</string>
+    <string name="menu_settings">Settings</string>
     
 
 </resources>

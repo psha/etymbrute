@@ -92,9 +92,6 @@ public class HomeActivity extends Activity{
     private void openSettings(){
     	Log.d(tag, "Opening Settings dialog.");
         //settings menu
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new EtymbruteSettingsFragment())
-                .addToBackStack(getResources().getString(R.string.action_settings) )
-                .commit();
+    	startActivity(new Intent(this, SettingsActivity.class));
     }
 }
