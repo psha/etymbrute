@@ -2,6 +2,7 @@ package eu.psha.etymbrute;
 
 import java.io.File;
 
+import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,21 +25,21 @@ public class WordProvider extends ContentProvider {
     private static final UriMatcher myUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static{
-    	myUriMatcher.addURI("eu.psha.etymbrute.wordprovider", "search_suggest_query", 1);
-    	myUriMatcher.addURI("com.example.app.provider", "table3/#", 2);
+    	myUriMatcher.addURI("eu.psha.etymbrute.wordprovider", "search_suggest_query/*", 1);
+    	myUriMatcher.addURI("com.example.app.provider", "open/#", 2);
     }
 	private void setupDb() {
 
 		if (db == null) {
-			SharedPreferences sharedPref = PreferenceManager
-					.getDefaultSharedPreferences(getContext());
-			String url = sharedPref.getString("db_name", getContext()
-					.getString(R.string.db_file_default));
-			File f = new File(url);
+			
+			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+			//String url = sharedPref.getString("db_name", getContext().getString(R.string.db_file_default));
+
+			File f = new File(getContext().getFilesDir().toString() + "/etym.db");
 			if (f.exists() && !f.isDirectory()) {
 				String s = Environment.getExternalStorageDirectory().getPath().toString();
-				Log.d("EtymBrute", "url is " + url + ", trying this instead: " + s +"/testingThis.db" );
-				db = SQLiteDatabase.openDatabase(s+"/testingThis.db", null, SQLiteDatabase.OPEN_READONLY);
+				
+				db = SQLiteDatabase.openDatabase(f.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY);
 				//db = SQLiteDatabase.openDatabase(url, null, SQLiteDatabase.OPEN_READONLY);
 			} else
 				Log.d("EtymBrute", "Database file does not exist.");
@@ -75,7 +76,29 @@ public class WordProvider extends ContentProvider {
 			String[] selectionArgs, String sortOrder) {
 		setupDb();
 		Log.d("EtymBrute", ".query() Uri= " + uri.toString() + " lastseg:" + uri.getLastPathSegment());
-		return null;
+		
+		
+        switch (myUriMatcher.match(uri))
+        {
+            case SUGGESTIONS:
+                return find_suggestion(uri.getLastPathSegment());
+            case WORD:
+                return null; //TODO: Plug in word search
+            default:
+                return null;
+        }
+
+		
+	}
+
+	private Cursor find_suggestion(String q) {
+		setupDb();
+		if(q.equals("") || q.equals("search_suggest_query"))
+			return null;
+		//use this for match IN word, not just start of word: LIKE '%' || ? || '%' 
+		Cursor c = db.rawQuery("SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id FROM Words WHERE word LIKE '%' || ? LIMIT 20;", new String[]{q});
+		Log.d("EtymBrute", "Performed suggestion query: " + c.getCount());
+		return c;
 	}
 
 	@Override
