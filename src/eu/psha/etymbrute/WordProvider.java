@@ -1,7 +1,6 @@
 package eu.psha.etymbrute;
 
 import java.io.File;
-
 import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -9,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
@@ -92,12 +92,19 @@ public class WordProvider extends ContentProvider {
 	}
 
 	private Cursor find_suggestion(String q) {
+		
 		setupDb();
 		if(q.equals("") || q.equals("search_suggest_query"))
 			return null;
-		//use this for match IN word, not just start of word: LIKE '%' || ? || '%' 
-		Cursor c = db.rawQuery("SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id FROM Words WHERE word LIKE '%' || ? LIMIT 20;", new String[]{q});
-		Log.d("EtymBrute", "Performed suggestion query: " + c.getCount());
+		
+		//fix the query to work with sql wildcards _ %
+		q = q.replaceAll("_", "}_");
+		q = q.replaceAll("%", "}%");
+		q = DatabaseUtils.sqlEscapeString(q + "%" );
+		
+		String query = "SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id FROM Words WHERE word LIKE " + q + " ESCAPE '}' LIMIT 20;";
+		Cursor c = db.rawQuery(query,null);
+
 		return c;
 	}
 
