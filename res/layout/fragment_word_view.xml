@@ -6,21 +6,22 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".HomeActivity" >
+    tools:context="eu.psha.etymbrute.WordViewActivity$PlaceholderFragment" >
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world" />
 
     <TextView
         android:id="@+id/wv_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search_instructions" />
-
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/wv_test" >
-
-    </ListView>
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="34dp"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
