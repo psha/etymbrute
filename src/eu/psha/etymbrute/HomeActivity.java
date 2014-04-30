@@ -1,5 +1,6 @@
 package eu.psha.etymbrute;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.SearchManager;
@@ -77,14 +78,25 @@ public class HomeActivity extends Activity{
         // a new instance of this activity, so the system delivers the search intent here)
     	//
     	// The emulator has a bug, this is called twice every time. Should work on actual devices.
-	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-		      String query = intent.getStringExtra(SearchManager.QUERY);
-		      Log.d(tag, "onNewIntent() caugth search");
-		      doSearch(query);
-		    }
+
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			Log.d(tag, "onNewIntent() caugth search");
+			doSearch(query);	
+		} 
+		//View is called when the user clicks suggestion in search bar
+		else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+			Log.d(tag, "caugth ACTION_VIEW");
+			Uri data = intent.getData();
+			showWordView(data);
+		}
     }
     
-    public void doSearch(String query){
+    private void showWordView(Uri data) {
+    	Log.d(tag, "Showing wordView for data: " + data.toString());
+	}
+
+	private void doSearch(String query){
 	      Log.d(tag, "Handle query: " + query);
     }
     

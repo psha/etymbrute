@@ -102,7 +102,7 @@ public class WordProvider extends ContentProvider {
 		q = q.replaceAll("%", "}%");
 		q = DatabaseUtils.sqlEscapeString(q + "%" );
 		
-		String query = "SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id FROM Words WHERE word LIKE " + q + " ESCAPE '}' LIMIT 20;";
+		String query = "SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id, _id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + " FROM Words WHERE word LIKE " + q + " ESCAPE '}' LIMIT 20;";
 		Cursor c = db.rawQuery(query,null);
 
 		return c;
