@@ -23,7 +23,7 @@ public class DbHelper extends SQLiteOpenHelper{
 			
 		}
 		else{
-			Log.d("EtymBrute", "Database file does not exist.");
+			Log.e("EtymBrute", "Database file does not exist. Tried file: " + url);
 		}
 	}
 
