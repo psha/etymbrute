@@ -17,6 +17,9 @@ import android.util.Log;
 
 public class WordProvider extends ContentProvider {
 	// private MySqliteOpenHelper msoh;
+	public static String AUTHORITY = "eu.psha.etymbrute.wordprovider";
+	public static Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/word/");
+	
 	private SQLiteDatabase db = null;
 
 	private static final int SUGGESTIONS = 1;
@@ -25,8 +28,8 @@ public class WordProvider extends ContentProvider {
     private static final UriMatcher myUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static{
-    	myUriMatcher.addURI("eu.psha.etymbrute.wordprovider", "search_suggest_query/*", 1);
-    	myUriMatcher.addURI("com.example.app.provider", "open/#", 2);
+    	myUriMatcher.addURI(AUTHORITY, "search_suggest_query/*", 1);
+    	myUriMatcher.addURI(AUTHORITY, "word/#", 2);
     }
 	private void setupDb() {
 
@@ -81,9 +84,9 @@ public class WordProvider extends ContentProvider {
         switch (myUriMatcher.match(uri))
         {
             case SUGGESTIONS:
-                return find_suggestion(uri.getLastPathSegment());
+                return findSuggestion(uri.getLastPathSegment());
             case WORD:
-                return null; //TODO: Plug in word search
+               	return getWord(uri.getLastPathSegment());
             default:
                 return null;
         }
@@ -91,7 +94,7 @@ public class WordProvider extends ContentProvider {
 		
 	}
 
-	private Cursor find_suggestion(String q) {
+	private Cursor findSuggestion(String q) {
 		
 		setupDb();
 		if(q.equals("") || q.equals("search_suggest_query"))
@@ -107,7 +110,17 @@ public class WordProvider extends ContentProvider {
 
 		return c;
 	}
-
+	
+	private Cursor getWord(String id){
+		setupDb();
+		Log.d("EtymBrute", "WordProvider.getWord: got id: " + id);
+		String query = "SELECT * FROM Words WHERE _id=" + id + ";";
+		Cursor c = db.rawQuery(query,null);
+		
+		return c;
+	}
+	
+	
 	@Override
 	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
 		// TODO Auto-generated method stub

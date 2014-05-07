@@ -2,6 +2,9 @@ package eu.psha.etymbrute;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class WordViewActivity extends Activity {
 	
@@ -21,30 +25,22 @@ public class WordViewActivity extends Activity {
 		setContentView(R.layout.activity_word_view);
 
 		if (savedInstanceState == null) {
-			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-
-		
-		
-	}
-	
-	
-
-	@Override
-	public void onUserInteraction() {
-		// TODO Auto-generated method stub
-		super.onUserInteraction();
-		
-		TextView test = (TextView) findViewById(R.id.wv_test);
 		String word_id =  getIntent().getExtras().getString("word_id");
-		if(test == null)
-			Log.d(tag, "textView is null");
-		else
-			Log.d(tag, "Word_id is there: " + word_id);
+		Uri uri = Uri.withAppendedPath(WordProvider.CONTENT_URI, word_id);
 		
-		test.setText(word_id);
+		Cursor c = getContentResolver().query(uri, null, null, new String[]{word_id}, null);
+		
+		if (c.moveToFirst()) {
+			setTitle(c.getString(1));
+			setEtym(c.getString(2));
+			setPronunciation(c.getString(5));
+		}
+		else{
+			Log.e("EtymBrute", "Tried to display Word, but got cursor was not returned correctly from WordProvider.");
+		}
+		c.close();
 	}
 
 
@@ -69,24 +65,26 @@ public class WordViewActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_word_view,
-					container, false);
-			
-
-			
-			return rootView;
+	
+	//----------- methods for updating fields
+	private void setTitle(String t){
+		if(t != null ){
+			TextView tv = (TextView) findViewById(R.id.wv_title);
+			tv.setText(t);
 		}
 	}
-
+	
+	private void setPronunciation(String s){
+		if(s != null ){
+			TextView tv = (TextView) findViewById(R.id.wv_pro);
+			tv.setText(s);
+		}
+	}
+	
+	private void setEtym(String s){
+		if(s != null ){
+			TextView tv = (TextView) findViewById(R.id.wv_etym);
+			tv.setText(s);
+		}
+	}
 }
