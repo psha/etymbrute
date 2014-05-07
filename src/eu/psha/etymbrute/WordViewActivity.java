@@ -22,6 +22,7 @@ public class WordViewActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.e("EtymBrute", "Im here");
 		setContentView(R.layout.activity_word_view);
 
 		if (savedInstanceState == null) {

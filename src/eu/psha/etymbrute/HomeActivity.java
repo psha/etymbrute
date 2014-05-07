@@ -94,6 +94,9 @@ public class HomeActivity extends Activity{
     
     private void showWordView(Uri data) {
     	Log.d(tag, "Showing wordView for data: " + data.toString());
+    	Intent intent = new Intent( this , WordViewActivity.class);
+    	intent.putExtra("word_id",data.getLastPathSegment());
+    	startActivity(intent);
 	}
 
 	private void doSearch(String query){

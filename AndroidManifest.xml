@@ -40,6 +40,15 @@
             android:label="@string/menu_settings" >
         </activity>
         
+        <activity
+            android:name="eu.psha.etymbrute.WordViewActivity"
+            android:label="@string/title_activity_word_view"
+            android:parentActivityName="eu.psha.etymbrute.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="eu.psha.etymbrute.HomeActivity" />
+      	</activity>
+      	
         <provider
             android:name="eu.psha.etymbrute.WordProvider"
             android:authorities="eu.psha.etymbrute.wordprovider" />
