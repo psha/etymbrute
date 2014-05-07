@@ -38,14 +38,29 @@ public class WordProvider extends ContentProvider {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
 			//String url = sharedPref.getString("db_name", getContext().getString(R.string.db_file_default));
 
-			File f = new File(getContext().getFilesDir().toString() + "/etym.db");
-			if (f.exists() && !f.isDirectory()) {
-				String s = Environment.getExternalStorageDirectory().getPath().toString();
+			File private_app_mem = new File(getContext().getFilesDir().toString() + "/etym.db");
+			File external_app_mem = new File(Environment.getExternalStorageDirectory().getPath().toString() + "/etym.db");
+						
+			if (private_app_mem.exists() && !private_app_mem.isDirectory()) {
+				Log.d("EtymBrute", "Opening database in apps private memory on internal memory: " + private_app_mem.getAbsolutePath());
+				db = SQLiteDatabase.openDatabase(private_app_mem.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY);
+			}
+			else if (external_app_mem.exists() && !external_app_mem.isDirectory()){
+				Log.d("EtymBrute", "Opening database in apps private memory on external memory (SD card): " + external_app_mem.getAbsolutePath());
+				db = SQLiteDatabase.openDatabase(external_app_mem.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY);
 				
-				db = SQLiteDatabase.openDatabase(f.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY);
-				//db = SQLiteDatabase.openDatabase(url, null, SQLiteDatabase.OPEN_READONLY);
-			} else
-				Log.d("EtymBrute", "Database file does not exist.");
+			}
+			else{
+				File external_crazy = new File("/storage/extSdCard/etymbrute/etym.db");
+				Log.d("EtymBrute", "Database file does not exist in any sensible location. Using: " + external_crazy.getAbsolutePath());
+				if (external_crazy.exists() && !external_crazy.isDirectory()){
+					Log.d("EtymBrute", "Found db in: " + external_crazy.getAbsolutePath());
+					db = SQLiteDatabase.openDatabase(external_crazy.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY);
+				}
+				else
+					Log.e("EtymBrute", "Found no db");
+			}
+			
 		}
 
 	}
