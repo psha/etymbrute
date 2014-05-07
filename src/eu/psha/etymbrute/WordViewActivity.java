@@ -3,6 +3,7 @@ package eu.psha.etymbrute;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,7 +23,6 @@ public class WordViewActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.e("EtymBrute", "Im here");
 		setContentView(R.layout.activity_word_view);
 
 		if (savedInstanceState == null) {
@@ -34,9 +34,8 @@ public class WordViewActivity extends Activity {
 		Cursor c = getContentResolver().query(uri, null, null, new String[]{word_id}, null);
 		
 		if (c.moveToFirst()) {
-			setTitle(c.getString(1));
-			setEtym(c.getString(2));
-			setPronunciation(c.getString(5));
+			LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			inflater.inflate(R.layout.word_compound, root)
 		}
 		else{
 			Log.e("EtymBrute", "Tried to display Word, but got cursor was not returned correctly from WordProvider.");
@@ -67,25 +66,5 @@ public class WordViewActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	//----------- methods for updating fields
-	private void setTitle(String t){
-		if(t != null ){
-			TextView tv = (TextView) findViewById(R.id.wv_title);
-			tv.setText(t);
-		}
-	}
 	
-	private void setPronunciation(String s){
-		if(s != null ){
-			TextView tv = (TextView) findViewById(R.id.wv_pro);
-			tv.setText(s);
-		}
-	}
-	
-	private void setEtym(String s){
-		if(s != null ){
-			TextView tv = (TextView) findViewById(R.id.wv_etym);
-			tv.setText(s);
-		}
-	}
 }

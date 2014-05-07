@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/wv_wc_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="Word"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/wv_wc_pos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/wv_wc_word"
+        android:layout_marginLeft="@dimen/wv_margin_between_word_and_pos"
+        android:layout_toRightOf="@+id/wv_wc_word"
+        android:text="adjective"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/wv_wc_pro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wv_wc_word"
+        android:layout_marginLeft="@dimen/wv_margin_word_data"
+        android:layout_marginTop="@dimen/wv_small_vertical_margin"
+        android:text="prononciation 239 12930903"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/wv_wc_etym"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wv_wc_pro"
+        android:layout_marginLeft="@dimen/wv_margin_word_data"
+        android:layout_marginTop="@dimen/wv_small_vertical_margin"
+        android:text="Etymology"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>

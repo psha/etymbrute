@@ -8,29 +8,4 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="eu.psha.etymbrute.WordViewActivity" >
 
-    <TextView
-        android:id="@+id/wv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/wv_pro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/wv_title"
-        android:layout_below="@+id/wv_title"
-        android:text="Pronunciation"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/wv_etym"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/wv_pro"
-        android:layout_below="@+id/wv_pro"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
 </RelativeLayout>

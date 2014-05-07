@@ -3,5 +3,10 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
+	
+	<!-- WordView -->
+    <dimen name="wv_margin_word_data">24dp</dimen>
+    <dimen name="wv_margin_entry">32dp</dimen>
+    <dimen name="wv_margin_between_word_and_pos">8dp</dimen>
+    <dimen name="wv_small_vertical_margin">4dp</dimen>
 </resources>
