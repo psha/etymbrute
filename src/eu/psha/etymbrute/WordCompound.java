@@ -15,18 +15,23 @@ public class WordCompound extends LinearLayout {
 	
 	public WordCompound(Context context, AttributeSet attrs) {
 		super(context, attrs);
-        LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.word_compound, this);
- 
-        loadViews();
+		
+		inflateThis(context);
 	}
 
 	public WordCompound(Context context) {
 		super(context);
 		
-		loadViews();
+		inflateThis(context);
 	}
-
+	
+	private void inflateThis(Context context){
+        LayoutInflater inflater = LayoutInflater.from(context);
+        inflater.inflate(R.layout.word_compound, this);
+ 
+        loadViews();
+	}
+	
 	private void loadViews(){
 		word = (TextView)findViewById(R.id.wv_wc_word);
 		pos = (TextView)findViewById(R.id.wv_wc_pos );
@@ -36,12 +41,20 @@ public class WordCompound extends LinearLayout {
 	
 	public void setData(String word, String pos, String pro, String etym){
 		this.word.setText(word);
+		
 		if(pos != null)
 			this.pos.setText(pos);
+		
 		if(pro != null)
 			this.pro.setText(pro);
-		if(pro != null)
+		else
+			this.pro.setVisibility(TextView.GONE);
+		
+		if(etym != null)
 			this.etym.setText(etym);
+		else
+			this.etym.setVisibility(TextView.GONE);
+
 	}
 	
 }

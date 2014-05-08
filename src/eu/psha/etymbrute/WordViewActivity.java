@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,22 +29,34 @@ public class WordViewActivity extends Activity {
 		if (savedInstanceState == null) {
 		}
 		
+		populateView();
+
+	}
+
+
+
+
+	private void populateView() {
+		
 		String word_id =  getIntent().getExtras().getString("word_id");
 		Uri uri = Uri.withAppendedPath(WordProvider.CONTENT_URI, word_id);
 		
 		Cursor c = getContentResolver().query(uri, null, null, new String[]{word_id}, null);
 		
-		if (c.moveToFirst()) {
-			LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			inflater.inflate(R.layout.word_compound, root)
-		}
-		else{
-			Log.e("EtymBrute", "Tried to display Word, but got cursor was not returned correctly from WordProvider.");
-		}
+		
+		c.moveToFirst();
+		eu.psha.etymbrute.WordCompound wc = new eu.psha.etymbrute.WordCompound(this);
+		wc.setData(c.getString(1), c.getString(3), c.getString(5), c.getString(2));
+		LinearLayout layout = (LinearLayout) findViewById(R.id.wv_container);
+		layout.addView(wc );
+	
 		c.close();
+		
 	}
 
-
+	private void addWordCompound(){
+		
+	}
 
 
 	@Override
