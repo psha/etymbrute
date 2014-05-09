@@ -15,21 +15,33 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+/**
+ * @author svar
+ *
+ */
+/**
+ * @author svar
+ *
+ */
 public class WordProvider extends ContentProvider {
 	// private MySqliteOpenHelper msoh;
 	public static String AUTHORITY = "eu.psha.etymbrute.wordprovider";
-	public static Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/word/");
+	public static Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+	public static Uri WORD_URI = Uri.parse("content://" + AUTHORITY + "/word/");
+	public static Uri SENSES_URI = Uri.parse("content://" + AUTHORITY + "/senses/");
 	
 	private SQLiteDatabase db = null;
 
 	private static final int SUGGESTIONS = 1;
     private static final int WORD = 2;
+    private static final int SENSES = 3;
 
     private static final UriMatcher myUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static{
-    	myUriMatcher.addURI(AUTHORITY, "search_suggest_query/*", 1);
-    	myUriMatcher.addURI(AUTHORITY, "word/#", 2);
+    	myUriMatcher.addURI(AUTHORITY, "search_suggest_query/*", SUGGESTIONS);
+    	myUriMatcher.addURI(AUTHORITY, "word/#", WORD);
+    	myUriMatcher.addURI(AUTHORITY, "senses/#", SENSES);
     }
 	private void setupDb() {
 
@@ -102,13 +114,26 @@ public class WordProvider extends ContentProvider {
                 return findSuggestion(uri.getLastPathSegment());
             case WORD:
                	return getWord(uri.getLastPathSegment());
+            case SENSES:
+            	return getSenses(uri.getLastPathSegment());
             default:
                 return null;
         }
 
-		
 	}
 
+	
+	/**
+	 * fix to escape _ and %. If you use thismethod you must add
+	 * ESCAPE '}' to the sql query.
+	 */
+	private String cleanString(String s){
+		//fix the query to work with sql wildcards _ %
+		s = s.replaceAll("_", "}_");
+		s = s.replaceAll("%", "}%");
+		return DatabaseUtils.sqlEscapeString(s + "%" );
+	}
+	
 	private Cursor findSuggestion(String q) {
 		
 		setupDb();
@@ -116,25 +141,40 @@ public class WordProvider extends ContentProvider {
 			return null;
 		
 		//fix the query to work with sql wildcards _ %
-		q = q.replaceAll("_", "}_");
-		q = q.replaceAll("%", "}%");
-		q = DatabaseUtils.sqlEscapeString(q + "%" );
+		q = cleanString(q);
 		
-		String query = "SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id, _id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + " FROM Words WHERE word LIKE " + q + " ESCAPE '}' LIMIT 20;";
+		String query = "SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id, _id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + " FROM Words WHERE word LIKE " + q + " ESCAPE '}' GROUP BY word LIMIT 20;";
 		Cursor c = db.rawQuery(query,null);
 
 		return c;
 	}
 	
+	
+	/**
+	 * @param id of a post with the word you want
+	 * @return cursor of all the posts with the same word as post with id id
+	 */
 	private Cursor getWord(String id){
 		setupDb();
 		Log.d("EtymBrute", "WordProvider.getWord: got id: " + id);
-		String query = "SELECT * FROM Words WHERE _id=" + id + ";";
+		String query = "SELECT word FROM Words WHERE _id=" + id + ";";
+		Log.d("EtymBrute", "HERE: " + query );
 		Cursor c = db.rawQuery(query,null);
+		String w = c.getString(0);
+		c.close();
+		
+		w = cleanString(w);	
+		query = "SELECT * FROM Words WHERE word=" + w + ";";
+		c = db.rawQuery(query,null);
 		
 		return c;
 	}
 	
+	private Cursor getSenses(String word_id){
+		setupDb();
+		String query = "SELECT * FROM Senses WHERE EntryKey=" + word_id + ";";
+		return db.rawQuery(query, null);
+	}
 	
 	@Override
 	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {

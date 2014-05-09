@@ -5,20 +5,31 @@
     android:orientation="vertical" >
 
     <TextView
+        android:id="@+id/wv_entry_index"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/wv_margin_entry"
+        android:layout_marginTop="@dimen/wv_small_vertical_margin"
+        android:text="00."
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
         android:id="@+id/wv_entry_gloss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/wv_margin_entry"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="1. This is what it is"
+        android:layout_alignTop="@id/wv_entry_index"
+        android:layout_toRightOf="@id/wv_entry_index"
+        android:text="This is what it is"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/wv_entry_example"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/wv_entry_gloss"
-        android:layout_marginLeft="@dimen/wv_margin_entry"
+        android:layout_alignLeft="@id/wv_entry_gloss"
+        android:layout_below="@id/wv_entry_index"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="italic" />
