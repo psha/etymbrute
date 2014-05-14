@@ -127,11 +127,14 @@ public class WordProvider extends ContentProvider {
 	 * fix to escape _ and %. If you use thismethod you must add
 	 * ESCAPE '}' to the sql query.
 	 */
-	private String cleanString(String s){
+	private String cleanString(String s, boolean addSuffixWildcard){
 		//fix the query to work with sql wildcards _ %
 		s = s.replaceAll("_", "}_");
 		s = s.replaceAll("%", "}%");
-		return DatabaseUtils.sqlEscapeString(s + "%" );
+		if (addSuffixWildcard)
+			return DatabaseUtils.sqlEscapeString(s+"%");
+		else
+			return DatabaseUtils.sqlEscapeString(s);
 	}
 	
 	private Cursor findSuggestion(String q) {
@@ -141,9 +144,10 @@ public class WordProvider extends ContentProvider {
 			return null;
 		
 		//fix the query to work with sql wildcards _ %
-		q = cleanString(q);
+		q = cleanString(q, true);
 		
 		String query = "SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id, _id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + " FROM Words WHERE word LIKE " + q + " ESCAPE '}' GROUP BY word LIMIT 20;";
+		Log.d("EtymBrute", "HERE: " + query );
 		Cursor c = db.rawQuery(query,null);
 
 		return c;
@@ -160,11 +164,16 @@ public class WordProvider extends ContentProvider {
 		String query = "SELECT word FROM Words WHERE _id=" + id + ";";
 		Log.d("EtymBrute", "HERE: " + query );
 		Cursor c = db.rawQuery(query,null);
+		
+		c.moveToFirst();
 		String w = c.getString(0);
 		c.close();
 		
-		w = cleanString(w);	
-		query = "SELECT * FROM Words WHERE word=" + w + ";";
+		w = cleanString(w,false);	
+		query = "SELECT * FROM Words WHERE word LIKE " + w + ";";
+		Log.d("EtymBrute", "HERE: " + query );
+
+		
 		c = db.rawQuery(query,null);
 		
 		return c;
@@ -172,7 +181,7 @@ public class WordProvider extends ContentProvider {
 	
 	private Cursor getSenses(String word_id){
 		setupDb();
-		String query = "SELECT * FROM Senses WHERE EntryKey=" + word_id + ";";
+		String query = "SELECT * FROM Senses WHERE entry_id=" + word_id + ";";
 		return db.rawQuery(query, null);
 	}
 	

@@ -30,7 +30,7 @@ public class WordViewActivity extends Activity {
 		}
 		
 		populateView();
-
+		
 	}
 
 
@@ -42,24 +42,28 @@ public class WordViewActivity extends Activity {
 		
 		Cursor c = getWords();
 		
-		
-		eu.psha.etymbrute.WordCompound wc;
-		eu.psha.etymbrute.SenseCompound s_comp;
-		while (c.moveToNext()) {
 			
+		while (c.moveToNext()) {
 			//add WordCompound
-			wc = new eu.psha.etymbrute.WordCompound(this);
+			eu.psha.etymbrute.WordCompound wc = new eu.psha.etymbrute.WordCompound(this);
+			Log.d("EtymBrute", "This is the data: "+c.getString(1));
 			wc.setData(c.getString(1), c.getString(3), c.getString(5), c.getString(2));
 			layout.addView(wc);
 			
 			//add Senses
-			Cursor sc = getSenses(c.getString(1));
+			Cursor sc = getSenses(c.getString(0));
+			Log.d("EtymBrute", "Found " + sc.getCount() + " senses.");
 			while(sc.moveToNext()){
-				s_comp = new eu.psha.etymbrute.SenseCompound(this);
-				s_comp.setData(sc.getString(1), sc.getString(1), sc.getString(1));
+				Log.d("EtymBrute", "addding sense: "+sc.getString(1));
+				eu.psha.etymbrute.SenseCompound s_comp = new eu.psha.etymbrute.SenseCompound(this);
+				s_comp.setData(sc.getString(1), sc.getString(2), sc.getString(3));
 				layout.addView(s_comp);
+				
+				TextView test = new TextView(this);
+				test.setText("test");
+				layout.addView( test);
 			}
-			
+			sc.close();
 		}
 		
 

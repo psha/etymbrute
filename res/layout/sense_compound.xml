@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/wv_entry_gloss"
-        android:layout_below="@id/wv_entry_index"
+        android:layout_below="@+id/wv_entry_gloss"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="italic" />
