@@ -1,5 +1,6 @@
 package eu.psha.etymbrute;
 
+import eu.psha.etymbrute.wikitext.EBWikiText;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -42,7 +43,7 @@ public class SenseCompound extends RelativeLayout {
 	
 	public void setData(String index, String gloss, String example){
 		this.index.setText(index);
-		this.gloss.setText(gloss);
+		this.gloss.setText(EBWikiText.fixWikiText(gloss));
 		
 		
 		if(example != null)

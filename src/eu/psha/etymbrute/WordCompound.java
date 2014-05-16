@@ -1,5 +1,6 @@
 package eu.psha.etymbrute;
 
+import eu.psha.etymbrute.wikitext.EBWikiText;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -51,7 +52,7 @@ public class WordCompound extends LinearLayout {
 			this.pro.setVisibility(TextView.GONE);
 		
 		if(etym != null)
-			this.etym.setText(etym);
+			this.etym.setText(EBWikiText.fixWikiText(etym));
 		else
 			this.etym.setVisibility(TextView.GONE);
 

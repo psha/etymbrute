@@ -41,33 +41,23 @@ public class WordViewActivity extends Activity {
 		LinearLayout layout = (LinearLayout) findViewById(R.id.wv_container);
 		
 		Cursor c = getWords();
-		
-			
+	
+		final int _id=0, word=1, etymology=2, partOfSpeech=3, wordForms=4, pronunciation=5, entry_id=6, senseIndex=7, gloss=8, examples=9;
 		while (c.moveToNext()) {
-			//add WordCompound
-			eu.psha.etymbrute.WordCompound wc = new eu.psha.etymbrute.WordCompound(this);
-			Log.d("EtymBrute", "This is the data: "+c.getString(1));
-			wc.setData(c.getString(1), c.getString(3), c.getString(5), c.getString(2));
-			layout.addView(wc);
+			
+			if (c.getString(senseIndex).equals("1")){ //new entry
+				eu.psha.etymbrute.WordCompound wc = new eu.psha.etymbrute.WordCompound(this);
+				wc.setData(c.getString(word), c.getString(partOfSpeech), c.getString(pronunciation), c.getString(etymology));
+				layout.addView(wc);
+			}
 			
 			//add Senses
-			Cursor sc = getSenses(c.getString(0));
-			Log.d("EtymBrute", "Found " + sc.getCount() + " senses.");
-			while(sc.moveToNext()){
-				Log.d("EtymBrute", "addding sense: "+sc.getString(1));
-				eu.psha.etymbrute.SenseCompound s_comp = new eu.psha.etymbrute.SenseCompound(this);
-				s_comp.setData(sc.getString(1), sc.getString(2), sc.getString(3));
-				layout.addView(s_comp);
-				
-				TextView test = new TextView(this);
-				test.setText("test");
-				layout.addView( test);
-			}
-			sc.close();
-		}
+			
+			eu.psha.etymbrute.SenseCompound s_comp = new eu.psha.etymbrute.SenseCompound(this);
+			s_comp.setData(c.getString(senseIndex), c.getString(gloss), c.getString(examples));
+			layout.addView(s_comp);
 		
-
-	
+		}
 		c.close();
 		
 	}
@@ -75,15 +65,10 @@ public class WordViewActivity extends Activity {
 	private Cursor getWords(){
 		String word_id =  getIntent().getExtras().getString("word_id");
 		Uri uri = Uri.withAppendedPath(WordProvider.WORD_URI, word_id);
-		
+		Log.d("EtymBrute", uri.toString());
 		return getContentResolver().query(uri, null, null, new String[]{word_id}, null);
 	}
 
-	private Cursor getSenses(String word_id){
-		Uri uri = Uri.withAppendedPath(WordProvider.SENSES_URI, word_id);
-		
-		return getContentResolver().query(uri, null, null, new String[]{word_id}, null);
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

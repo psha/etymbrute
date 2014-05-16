@@ -101,6 +101,9 @@ public class HomeActivity extends Activity{
 
 	private void doSearch(String query){
 	      Log.d(tag, "Handle query: " + query);
+	      Intent intent = new Intent( this , WordViewActivity.class);
+	      intent.putExtra("word_id",query);
+	      startActivity(intent);
     }
     
     // Open the settings dialog

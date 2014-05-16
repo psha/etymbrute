@@ -40,7 +40,7 @@ public class WordProvider extends ContentProvider {
 
     static{
     	myUriMatcher.addURI(AUTHORITY, "search_suggest_query/*", SUGGESTIONS);
-    	myUriMatcher.addURI(AUTHORITY, "word/#", WORD);
+    	myUriMatcher.addURI(AUTHORITY, "word/*", WORD);
     	myUriMatcher.addURI(AUTHORITY, "senses/#", SENSES);
     }
 	private void setupDb() {
@@ -105,7 +105,7 @@ public class WordProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		setupDb();
-		Log.d("EtymBrute", ".query() Uri= " + uri.toString() + " lastseg:" + uri.getLastPathSegment());
+		Log.d("EtymBrute", "WordProvider.query() Uri= " + uri.toString() + " lastseg:" + uri.getLastPathSegment());
 		
 		
         switch (myUriMatcher.match(uri))
@@ -113,6 +113,7 @@ public class WordProvider extends ContentProvider {
             case SUGGESTIONS:
                 return findSuggestion(uri.getLastPathSegment());
             case WORD:
+            	Log.d("EtymBrute", "Matched WORD URI");
                	return getWord(uri.getLastPathSegment());
             case SENSES:
             	return getSenses(uri.getLastPathSegment());
@@ -146,7 +147,7 @@ public class WordProvider extends ContentProvider {
 		//fix the query to work with sql wildcards _ %
 		q = cleanString(q, true);
 		
-		String query = "SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id, _id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + " FROM Words WHERE word LIKE " + q + " ESCAPE '}' GROUP BY word LIMIT 20;";
+		String query = "SELECT word AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", _id, word AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + " FROM Words WHERE word LIKE " + q + " ESCAPE '}' GROUP BY word LIMIT 20;";
 		Log.d("EtymBrute", "HERE: " + query );
 		Cursor c = db.rawQuery(query,null);
 
@@ -158,23 +159,15 @@ public class WordProvider extends ContentProvider {
 	 * @param id of a post with the word you want
 	 * @return cursor of all the posts with the same word as post with id id
 	 */
-	private Cursor getWord(String id){
+	private Cursor getWord(String word){
 		setupDb();
-		Log.d("EtymBrute", "WordProvider.getWord: got id: " + id);
-		String query = "SELECT word FROM Words WHERE _id=" + id + ";";
-		Log.d("EtymBrute", "HERE: " + query );
-		Cursor c = db.rawQuery(query,null);
+		Log.d("EtymBrute", "WordProvider.getWord: got word: " + word);
 		
-		c.moveToFirst();
-		String w = c.getString(0);
-		c.close();
-		
-		w = cleanString(w,false);	
-		query = "SELECT * FROM Words WHERE word LIKE " + w + ";";
+		word = cleanString(word,false);
+		String query = "SELECT * FROM Words, Senses WHERE Words._id = Senses.entry_id and Words.word=" + word + " ORDER BY Words.partOfSpeech, Senses.senseIndex ASC;";
 		Log.d("EtymBrute", "HERE: " + query );
 
-		
-		c = db.rawQuery(query,null);
+		Cursor c = db.rawQuery(query,null);
 		
 		return c;
 	}

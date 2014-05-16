@@ -17,7 +17,7 @@ public class EBWikiText {
 													"{{suffix|gate|er}}, {{suffix|gate|er|lang=er}}",
 													"A representation of the pronunciation of ''[[haircut]]'' by a speaker whose dialect lacks the [[w:Voiceless glottal fricative|voiceless glottal fricative or transition]] ({{IPA|lang=en|[h]}}).",
 													"A representation of the pronunciation of ''[[half]]'' by a speaker whose dialect lacks the [[w:Voiceless glottal fricative|voiceless glottal fricative or transition]] ({{IPA|lang=en|[h]}}).",
-													"From {{etyl|ang|en}} ''[[Eadburh]]'s'' (a woman's name) ''[[ham|hām]]''.");
+													"From {{etyl|ang|en}} ''[[Eadburh]]'s'' (a woman's name) ''[[ham|hām]]''. {{context|Australia|slang|lang=en}}, {{context|Australia|lang=en}} {{abbreviation of|w:else|Elizabet Regina}},,,, {{abbreviation of|w:else|Elizabet Regina|balltorp}}");
 	
 	private List<String> ex_pro = Arrays.asList(	"IPA: /ˈeɪs ɪnˌhɪb.ɪ.tɚ/ {{US}}\r\n",
 													"IPA: /ˈɑːɡə kʊkə(ɹ)/ {{}}\r\n",
@@ -37,7 +37,7 @@ public class EBWikiText {
 	public static void main(String[] args) {
 		for(String i : ex_etym){
 			System.out.println("Pre:  " + i);
-			System.out.println("Post: " + fixEtym(i));
+			System.out.println("Post: " + fixWikiText(i));
 		}
 	}
 	
@@ -52,12 +52,12 @@ public class EBWikiText {
 		return m.replaceAll(replacement);
 	}
 	
-	public static String fixEtym(String s){
+	public static String fixWikiText(String s){
 		//[[w:this|that]]
-		s = mAndR(s, "\\[\\[w:(.*?)\\|(.*?)]]", "$2");
+		s = mAndR(s, "\\[\\[w:\\|wikipedia:(.*?)\\|(.*?)]]", "$2");
 		
 		////[[w:this]]
-		s = mAndR(s, "\\[\\[w:(.*?)]]", "$1");
+		s = mAndR(s, "\\[\\[w:\\|wikipedia:(.*?)]]", "$1");
 		
 		//[[this]]
 		s = mAndR(s, "\\[\\[(.*?)]]", "$1");
@@ -69,15 +69,21 @@ public class EBWikiText {
 		s = mAndR(s, "\\{\\{IPA\\|(.*?)\\|lang=.*?\\}\\}", "$1");
 		
 		//suffix, simplest case only, loads of unhandled special cases
-		s = mAndR(s, "\\{\\{suffix\\|(.*?)\\|(.*?)(|lang=.*?)?}}", "$1 + -$2");
+		s = mAndR(s, "\\{\\{suffix\\|(.*?)\\|(.*?)(\\|lang=.*?)*\\}\\}", "$1 + -$2");
 		
 		//prefix, simplest case only, loads of unhandled special cases
-		s = mAndR(s, "\\{\\{prefix\\|(.*?)\\|(.*?)(|lang=.*?)?}}", "$1- + $2");
+		s = mAndR(s, "\\{\\{prefix\\|(.*?)\\|(.*?)(\\|lang=.*?)*\\}\\}", "$1- + $2");
 		
-		//etyl
-		System.out.println(mAndR(s, "\\{\\{etyl\\|(.*?)\\|(.*?)}}", "$1"));
-		s =  resolveLang(  "en");
+		//context
+		s = mAndR(s, "\\{\\{context\\|(.*?)(\\|.*?)*(\\|lang=.*?)*\\}\\}", "($1)");
 		
+		//abr.
+		s = mAndR(s, "\\{\\{abbreviation of\\|(.*?)\\|(.*?)(\\|.*?)*\\}\\}", "abbreviation of $2");
+		
+//		//etyl TODO: fix etyl
+//		System.out.println(mAndR(s, "\\{\\{etyl\\|(.*?)\\|(.*?)\\}\\}", "$1"));
+//		s =  resolveLang(  "en");
+//		
 		return s;
 	}
 	
