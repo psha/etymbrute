@@ -14,9 +14,10 @@ public class EBWikiText {
 	private static List<String> ex_etym = Arrays.asList(	"From an [[orthographic]] variant of {{term|etc.|lang=en}}, which used the [[ligature]] of ''et'', {{term|&|lang=en}}.",
 													"''[[&]]'' + ''lit'', a shortening of ''[[literal]]'' or ''[[literally]]''.",
 													"A common shortening of ''[[2000s]]''.",
-													"{{suffix|gate|er}}",
+													"{{suffix|gate|er}}, {{suffix|gate|er|lang=er}}",
 													"A representation of the pronunciation of ''[[haircut]]'' by a speaker whose dialect lacks the [[w:Voiceless glottal fricative|voiceless glottal fricative or transition]] ({{IPA|lang=en|[h]}}).",
-													"A representation of the pronunciation of ''[[half]]'' by a speaker whose dialect lacks the [[w:Voiceless glottal fricative|voiceless glottal fricative or transition]] ({{IPA|lang=en|[h]}}).");
+													"A representation of the pronunciation of ''[[half]]'' by a speaker whose dialect lacks the [[w:Voiceless glottal fricative|voiceless glottal fricative or transition]] ({{IPA|lang=en|[h]}}).",
+													"From {{etyl|ang|en}} ''[[Eadburh]]'s'' (a woman's name) ''[[ham|hām]]''.");
 	
 	private List<String> ex_pro = Arrays.asList(	"IPA: /ˈeɪs ɪnˌhɪb.ɪ.tɚ/ {{US}}\r\n",
 													"IPA: /ˈɑːɡə kʊkə(ɹ)/ {{}}\r\n",
@@ -38,6 +39,10 @@ public class EBWikiText {
 			System.out.println("Pre:  " + i);
 			System.out.println("Post: " + fixEtym(i));
 		}
+	}
+	
+	private static String resolveLang(String lang_code){
+		return Language.findByCode(lang_code).getName();
 	}
 	
 	//match and replace
@@ -62,6 +67,16 @@ public class EBWikiText {
 		
 		//{{IPA|lang=en|[h]}}
 		s = mAndR(s, "\\{\\{IPA\\|(.*?)\\|lang=.*?\\}\\}", "$1");
+		
+		//suffix, simplest case only, loads of unhandled special cases
+		s = mAndR(s, "\\{\\{suffix\\|(.*?)\\|(.*?)(|lang=.*?)?}}", "$1 + -$2");
+		
+		//prefix, simplest case only, loads of unhandled special cases
+		s = mAndR(s, "\\{\\{prefix\\|(.*?)\\|(.*?)(|lang=.*?)?}}", "$1- + $2");
+		
+		//etyl
+		System.out.println(mAndR(s, "\\{\\{etyl\\|(.*?)\\|(.*?)}}", "$1"));
+		s =  resolveLang(  "en");
 		
 		return s;
 	}
